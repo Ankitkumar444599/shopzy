@@ -1,0 +1,6 @@
+import 'package:ai_real_estate/widgets/app_shell.dart';
+import 'package:ai_real_estate/widgets/metric_card.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+class HomeScreen extends StatelessWidget { const HomeScreen({super.key}); @override Widget build(BuildContext context) => AppShell(title: 'Dashboard', child: ListView(padding: const EdgeInsets.all(20), children: [Text('Welcome back 👋', style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold)), const SizedBox(height: 16), const SearchBar(hintText: 'Search properties, locations, reports'), const SizedBox(height: 20), Wrap(spacing: 12, runSpacing: 12, children: [FilledButton.icon(onPressed: () => context.go('/predict'), icon: const Icon(Icons.auto_awesome), label: const Text('Predict Price')), OutlinedButton.icon(onPressed: () => context.go('/map'), icon: const Icon(Icons.map_outlined), label: const Text('Select Location'))]), const SizedBox(height: 20), const MetricCard(title: 'Featured Properties', value: '24 curated homes', icon: Icons.real_estate_agent), const MetricCard(title: 'Recent Predictions', value: '\$5.2M avg', icon: Icons.analytics_outlined), const MetricCard(title: 'Market Trends', value: '+7.4% YoY', icon: Icons.trending_up)])); }

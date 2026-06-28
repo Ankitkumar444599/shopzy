@@ -1,0 +1,13 @@
+import 'package:ai_real_estate/constants/app_constants.dart';
+import 'package:ai_real_estate/models/property_input.dart';
+import 'package:ai_real_estate/providers/prediction_provider.dart';
+import 'package:ai_real_estate/widgets/app_shell.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+class PredictionScreen extends ConsumerStatefulWidget { const PredictionScreen({super.key}); @override ConsumerState<PredictionScreen> createState() => _PredictionScreenState(); }
+class _PredictionScreenState extends ConsumerState<PredictionScreen> { final area = TextEditingController(text: '1800'); final beds = TextEditingController(text: '3'); final baths = TextEditingController(text: '2'); final floors = TextEditingController(text: '1'); final age = TextEditingController(text: '5'); final parking = TextEditingController(text: '2'); final location = TextEditingController(text: 'Downtown'); String type = AppConstants.propertyTypes.first; String? result;
+  @override Widget build(BuildContext context) => AppShell(title: 'AI Price Prediction', child: ListView(padding: const EdgeInsets.all(20), children: [_field('Area (sq ft)', area), _field('Bedrooms', beds), _field('Bathrooms', baths), _field('Floors', floors), _field('Property age', age), _field('Parking spaces', parking), _field('Location', location), DropdownButtonFormField(value: type, items: AppConstants.propertyTypes.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(), onChanged: (v) => setState(() => type = v!), decoration: const InputDecoration(labelText: 'Property type')), const SizedBox(height: 16), FilledButton.icon(onPressed: _predict, icon: const Icon(Icons.auto_awesome), label: const Text('Predict')), if (result != null) Card(child: Padding(padding: const EdgeInsets.all(20), child: Text(result!, style: Theme.of(context).textTheme.titleLarge))) ]));
+  Widget _field(String label, TextEditingController c) => Padding(padding: const EdgeInsets.only(bottom: 12), child: TextField(controller: c, decoration: InputDecoration(labelText: label), keyboardType: TextInputType.number));
+  Future<void> _predict() async { final input = PropertyInput(area: double.parse(area.text), bedrooms: int.parse(beds.text), bathrooms: int.parse(baths.text), floors: int.parse(floors.text), age: int.parse(age.text), parking: int.parse(parking.text), location: location.text, propertyType: type); final p = await ref.read(predictionControllerProvider.notifier).predict(input); setState(() => result = 'Predicted Price: \$${p.price.toStringAsFixed(0)}\nConfidence: ${(p.confidence * 100).toStringAsFixed(0)}%\nRange: \$${p.low.toStringAsFixed(0)} - \$${p.high.toStringAsFixed(0)}\nRating: ${p.rating}\n${p.recommendation}'); }
+}
